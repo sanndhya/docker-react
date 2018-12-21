@@ -1,0 +1,15 @@
+# for docker we need superuser permission.
+sudo: required
+
+# we require docker-cli pre-installed
+services:
+    - docker    
+
+# before our tests ran
+before_install:
+    -  docker build -t sandhyatandel/docker-react -f Dockerfile.dev . 
+
+# script to run tests. tell travis to run tests and exit. if the status code is > 0 ; build failed.
+script:
+    - docker run sandhyatandel/docker-react npm run test -- --coverage    
+
