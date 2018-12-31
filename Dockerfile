@@ -21,6 +21,9 @@ RUN npm run build
 # Nginx server
 FROM nginx
 
+# default port inside container 
+EXPOSE 80
+
 # in the output of "npm run build" will be inside of /app/build folder inside container.
 # so we are copying it. because we only need (build folder ) for "npm run"
 # the syntext can be found in Nginx docker hub.
