@@ -1,15 +1,47 @@
-# for docker we need superuser permission.
+# Anytime we are making use of docker we must have superuser permission.
 sudo: required
 
 # we require docker-cli pre-installed
 services:
-    - docker    
+  - docker    
 
-# before our tests ran
+# some instruction needs to be run, before our tests ran.
 before_install:
-    -  docker build -t sandhyatandel/docker-react -f Dockerfile.dev . 
+  -  docker build -t sandhyatandel/docker-react -f Dockerfile.dev . 
 
-# script to run tests. tell travis to run tests and exit. if the status code is > 0 ; build failed.
+# script to run tests. tell travis to run tests and exit. if the status code is anything (greater than) > 0 ; build failed.
 script:
-    - docker run sandhyatandel/docker-react npm run test -- --coverage    
+  - docker run sandhyatandel/docker-react npm run test -- --coverage    
 
+# how to take our application and take if off to AWS (automatically via travis)
+deploy:
+  # pre installed providers
+  provider: elasticbeanstalk
+
+  # region: "region in Application URL"
+  region: "us-east-2"
+
+  # app: "Application name we created in AWS"
+  app: "docker-react"
+
+  # env: "The name of your environment file."
+  env: "DockerReact-env"
+
+  # bucket_name: "S3 bucket name"
+  bucket_name: "elasticbeanstalk-us-east-2-370200422572"
+
+  # bucket_path: "Application name"
+  bucket_path: "docker-react" 
+
+  # on: (anytime we push code to branch master, that's the time to deploy.)
+  on: 
+    # branch: master
+    branch: master
+
+  # access_key_id: $AWS_ACCESS_KEY. which is hidden in Travic Environment Variables.
+  access_key_id: $AWS_ACCESS_KEY
+
+  # secret_access_key: which is hidden in Travic Environment Variables.
+  secret_access_key: 
+    # secure: "$AWS_SECRET_KEY"      
+    secure: "$AWS_SECRET_KEY"  
